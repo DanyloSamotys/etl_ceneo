@@ -1,0 +1,4 @@
+/products/html/*
+/products/json/*
+.idea
+/node_modules
