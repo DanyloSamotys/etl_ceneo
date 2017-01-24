@@ -1,81 +1,137 @@
 $(document).ready(function () {
 
-    var timer;
+    function addNotification(msg, status) {
+        var notification = $('.alert');
 
-    $('[data-action]').click(function () {
-        var id = $('input[type="text"]').val();
-        var action = $(this).attr('data-action');
+        if (status) {
+            notification.removeClass('alert-danger');
+            notification.addClass('alert-success');
+        } else {
+            notification.removeClass('alert-success');
+            notification.addClass('alert-danger');
+        }
+
+        notification.find('.alert-message').text(msg);
+        notification.show();
+    }
+
+    function renderProduct(product) {
+        console.log(product);
+        $('.product-name').text(product.productName);
+        $('.product-score').text(product.productScore);
+        $('.product-price').text(product.productPrice);
+
+        product.reviews.map(function (review) {
+            $('.product-reviews').append('<hr>' +
+                '<div class="product-review">' +
+                '<div>productReviewer: ' + review.productReviewer + '</div>' +
+                '<div>reviewerRecommendation: ' + review.reviewerRecommendation + '</div>' +
+                '</div>')
+        });
+    }
+
+    $('button[data-action="extract"]').click(function () {
+        var id = $('input[type="number"]').val();
 
         $.ajax({
             type: 'POST',
-            url: '/api/v1/product/actions/' + action,
+            url: '/api/v1/product/actions/extract',
             data: {
                 id: id
             },
             success: function (response, textStatus, jqXHR) {
-                updateButtons(response);
+                addNotification(response.message, true);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
             }
         });
     });
 
-    $('input[type="text"]').keyup(function () {
-        console.log(true);
-        getProduct();
+    $('button[data-action="transform"]').click(function () {
+        var id = $('input[type="number"]').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/product/actions/transform',
+            data: {
+                id: id
+            },
+            success: function (response, textStatus, jqXHR) {
+                addNotification(response.message, true);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
+            }
+        });
     });
 
-    function getProduct() {
-        var id = $('input[type="text"]').val();
+    $('button[data-action="load"]').click(function () {
+        var id = $('input[type="number"]').val();
 
-        if (timer) {
-            clearTimeout(timer);
-        }
-
-        if (!id) {
-            $('button[data-action]').attr('disabled', 'disabled');
-
-            return;
-        }
-
-        timer = setTimeout(function() {
-            $.ajax({
-                type: 'GET',
-                url: '/api/v1/product/' + id,
-                success: function (response, textStatus, jqXHR) {
-                    updateButtons(response);
-                }
-            });
-        }, 1000);
-    }
-
-    function updateButtons(product) {
-        // If product doesn't exist, we should remove disable attribute from E, T, L and ETL.
-        if (!product) {
-            $('button[data-action]').removeAttr('disabled');
-
-            return;
-        }
-
-        switch (product.productStatus) {
-            // If product status is extracted, we should remove disable attribute from T and L.
-            case 0: {
-                $('button[data-action="transform"]').removeAttr('disabled');
-                $('button[data-action="load"]').removeAttr('disabled');
-                break;
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/product/actions/load',
+            data: {
+                id: id
+            },
+            success: function (response, textStatus, jqXHR) {
+                addNotification(response.message, true);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
             }
-            // If product status is transformed, we should remove disable attribute from L.
-            case 1: {
-                $('button[data-action="load"]').removeAttr('disabled');
-                break;
+        });
+    });
+
+    $('button[data-action="etl"]').click(function () {
+        var id = $('input[type="number"]').val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/product/actions/etl',
+            data: {
+                id: id
+            },
+            success: function (response, textStatus, jqXHR) {
+                addNotification(response.message, true);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
             }
-            // If product status is transformed, we shouldn't remove disable attribute from the buttons.
-            case 2: {
-                break;
+        });
+    });
+
+    $('button[data-action="show"]').click(function () {
+        var id = $('input[type="number"]').val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/api/v1/product/' + id,
+            success: function (response, textStatus, jqXHR) {
+                addNotification(response.message, true);
+                renderProduct(response.product.productDetails);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
             }
-            // If product status is transformed, we shouldn't remove disable attribute from the buttons.
-            case 3: {
-                break;
+        });
+    });
+
+    $('button[data-action="delete"]').click(function () {
+        var id = $('input[type="number"]').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/v1/product/' + id,
+            success: function (response, textStatus, jqXHR) {
+                addNotification(response.message, true);
+            },
+            error: function (response) {
+                addNotification(response.responseJSON.err, false);
             }
-        }
-    }
+        });
+    });
+
 
 });

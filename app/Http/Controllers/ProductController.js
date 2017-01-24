@@ -3,9 +3,9 @@ var ProductStatus = require('../../Enums/Status');
 var ParserController = require('../../Controllers/ParserController');
 
 function show(req, res) {
-    var productId = req.params.id;
+    var id = req.params.id;
 
-    ProductModel.findOne({productId: productId}, function(err, product) {
+    ProductModel.findOne({productId: id}, function(err, product) {
         if (err) {
             return res.status(400).json({
                 err: err
@@ -13,29 +13,49 @@ function show(req, res) {
         }
 
         // 200 - ok.
-        res.status(200).json(product);
+        res.status(200).json({
+            success: true,
+            message: 'Product was successfully loaded!',
+            product: product
+        });
     });
 }
 
-function extract(req, res) {
-    var productId = req.body.id;
+function destroy(req, res) {
+    var id = req.params.id;
 
-    ProductModel.create({
-        productId: productId,
-        productStatus: ProductStatus.EXTRACTED
-    }, function(err, product) {
-        if (err) {
-            return res.status(400).json({
+    ParserController.destroy(id)
+        .then(function() {
+            // 200 - ok.
+            res.status(200).json({
+                success: true,
+                message: 'Product was deleted successfully!'
+            });
+        })
+        .catch(function(err) {
+            res.status(400).json({
+                success: false,
                 err: err
-            })
-        }
+            });
+        });
+}
 
-        // 200 - ok.
-        res.status(200).json(product);
+function extract(req, res) {
+    var id = req.body.id;
 
-        // Use controller.
-        ParserController.extract(product);
-    });
+    ParserController.extract(id)
+        .then(function() {
+            res.status(200).json({
+                success: true,
+                message: 'Product was extracted successfully!'
+            });
+        })
+        .catch(function(err) {
+            res.status(400).json({
+                success: false,
+                err: err
+            });
+        });
 }
 
 function transform(req, res) {
@@ -75,13 +95,28 @@ function load(req, res) {
 }
 
 function etl(req, res) {
+    var id = req.body.id;
 
+    ParserController.etl(id)
+        .then(function() {
+            res.status(200).json({
+                success: true,
+                message: 'Product was successfully ETLed!'
+            });
+        })
+        .catch(function(err) {
+            res.status(400).json({
+                success: false,
+                err: err
+            });
+        });
 }
 
 module.exports = {
+    show: show,
+    destroy: destroy,
     extract: extract,
     transform: transform,
     load: load,
-    etl: etl,
-    show: show
+    etl: etl
 };

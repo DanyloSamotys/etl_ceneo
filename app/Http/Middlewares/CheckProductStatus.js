@@ -1,7 +1,7 @@
 var ProductModel = require('../../Models/Product');
 
 module.exports = function(req, res, next) {
-    var productId = req.body.id || req.params.id;
+    var productId = req.body.id;
 
     ProductModel.findOne({productId: productId}, function(err, product) {
         if (err) {
@@ -16,7 +16,7 @@ module.exports = function(req, res, next) {
             // 400 - bad request.
             res.status(400).json({
                 success: false,
-                err: 'Product with ' + productId + ' does not exist!'
+                error: 'Product with ' + productId + ' does not exist!'
             });
         }
     });

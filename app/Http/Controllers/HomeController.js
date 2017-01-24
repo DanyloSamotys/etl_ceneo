@@ -1,7 +1,7 @@
 var path = require('path');
 
 function index(req, res) {
-    res.sendFile(path.join(__dirname, '../../../public', 'index.html'));
+    res.render('pages/index');
 }
 
 module.exports = {

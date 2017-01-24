@@ -11,7 +11,8 @@ var Product = new Schema({
     productStatus: {
         type: Number,
         default: null
-    }
+    },
+    productDetails: Schema.Types.Mixed
 });
 
 module.exports = mongoose.model('Product', Product);

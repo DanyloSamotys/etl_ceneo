@@ -11,13 +11,13 @@ module.exports = function(req, res, next) {
         }
 
         if (product) {
-            next();
-        } else {
             // 400 - bad request.
             res.status(400).json({
                 success: false,
-                err: 'Product with ' + productId + ' does not exist!'
+                err: 'The product with ' + productId + ' has already exist!'
             });
+        } else {
+            next();
         }
     });
 };
