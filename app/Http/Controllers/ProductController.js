@@ -59,9 +59,9 @@ function extract(req, res) {
 }
 
 function transform(req, res) {
-    var productId = req.body.id;
+    var id = req.body.id;
 
-    ProductModel.findOneAndUpdate({productId: productId}, {productStatus: ProductStatus.TRANSFORMED}, function(err, product) {
+    ProductModel.findOneAndUpdate({productId: id}, {productStatus: ProductStatus.TRANSFORMED}, function(err, product) {
         if (err) {
             return res.status(400).json({
                 err: err
@@ -69,17 +69,20 @@ function transform(req, res) {
         }
 
         // 200 - ok.
-        res.status(200).json(product);
+        res.status(200).json({
+            success: true,
+            message: 'Product was transformed successfully!'
+        });
 
         // Use controller.
-        ParserController.transform(product);
+        ParserController.transform(id);
     });
 }
 
 function load(req, res) {
-    var productId = req.body.id;
+    var id = req.body.id;
 
-    ProductModel.findOneAndUpdate({productId: productId}, {productStatus: ProductStatus.LOADED}, function(err, product) {
+    ProductModel.findOneAndUpdate({productId: id}, {productStatus: ProductStatus.LOADED}, function(err, product) {
         if (err) {
             return res.status(400).json({
                 err: err
@@ -87,10 +90,14 @@ function load(req, res) {
         }
 
         // 200 - ok.
-        res.status(200).json(product);
+        res.status(200).json({
+            success: true,
+            message: 'Product was loaded successfully!'
+        });
+
 
         // Use controller.
-        ParserController.load(product);
+        ParserController.load(id);
     });
 }
 

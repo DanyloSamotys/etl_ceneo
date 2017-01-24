@@ -147,6 +147,11 @@ function load(id) {
                 // resolve(product);
             });
 
+            // Remove directory.
+            rmdir(path.join('./tmp/html', id.toString()));
+            // Remove JSON.
+            fs.unlinkSync(path.join('./tmp/json', id + '.json'));
+
             // todo: resolve it here, but it is a wrong way. We should resolve it in the findOneAndUpdate callback!
             resolve(id);
         })
@@ -172,10 +177,10 @@ function destroy(id) {
         ProductModel.findOneAndRemove({productId: id}, function(err, product) {
             if (err) reject(err);
 
-            // Remove directory.
-            rmdir(path.join('./tmp/html', id.toString()));
-            // Remove JSON.
-            fs.unlinkSync(path.join('./tmp/json', id + '.json'));
+            // // Remove directory.
+            // rmdir(path.join('./tmp/html', id.toString()));
+            // // Remove JSON.
+            // fs.unlinkSync(path.join('./tmp/json', id + '.json'));
 
             resolve();
         });
