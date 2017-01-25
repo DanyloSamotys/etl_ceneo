@@ -93,11 +93,43 @@ function transform(id) {
                         var reviews = [];
 
                         $('.product-review', '.product-reviews').each(function (i, elem) {
+                            var head = $(this).children('.product-review-header');
+                            var div = $(this).children('.show-review-content').children('.content-wide-col');
+                              
+                            var name = head.children('.reviewer-cell').children().text();
+                            var overall_opinion = head.children('.reviewer-recommendation').children().children().text();
+                            var positive_vote = div.children().children('.vote-yes').children().text();
+                            var negative_vote = div.children().children('.vote-no').children().text();
+                              
+                            var opinion_date = div.children('.js_product-review-usefulness').next().children('.review-time').children().text();
+                            var star_count = div.children('.js_product-review-usefulness').next().children('.review-score').next().text();
+                              
+                            var opinion = div.children('.product-review-body').text();
+                              
+                            var pros = "";
+                          
+                            div.children('.product-review-pros-cons').children('.pros-cell').children('.pros').next().each(function(i, elem) {
+                                pros = $(this).text();
+                            });
+                          
+                            var cons = "";
+                          
+                            div.children('.product-review-pros-cons').children('.cons-cell').children('.cons').next().each(function(i, elem) {
+                                cons = $(this).text();
+                            
+                            });
+                            
                             reviews[i] = {
                                 // Here should be all the information about the review.
                                 productReviewer: $(elem).find('.product-reviewer').text(),
                                 reviewerRecommendation: $(elem).find('.product-review-summary').text(),
-                                // ... go on, Daniel
+                                positive_vote: positive_vote,
+                                negative_vote: negative_vote,
+                                opinion_date: opinion_date,
+                                star_count: star_count,
+                                opinion: opinion,
+                                pros: pros,
+                                cons: cons,
                             }
                         });
 
@@ -106,7 +138,7 @@ function transform(id) {
                             productName: $('.product-name', '.product-content').text(),
                             productScore: $('.product-score', '.product-content').attr('content'),
                             productPrice: $('.price', '.offer-summary').text(),
-                            // ... go on, Daniel
+
                             reviews: reviews
                         })
                     })

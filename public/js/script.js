@@ -17,16 +17,26 @@ $(document).ready(function () {
 
     function renderProduct(product) {
         console.log(product);
+        $('.product-title').append('<h2>Produkt</h2>');
         $('.product-name').text(product.productName);
-        $('.product-score').text(product.productScore);
-        $('.product-price').text(product.productPrice);
+        $('.product-score').text("Ocena produktu: "+ product.productScore+"/5");
+        $('.product-price').text("Cena: " + product.productPrice + " zł");
+        $('.opinion-title').append('<h3>Opinie</h3>');
 
         product.reviews.map(function (review) {
+            
             $('.product-reviews').append('<hr>' +
                 '<div class="product-review">' +
-                '<div>productReviewer: ' + review.productReviewer + '</div>' +
-                '<div>reviewerRecommendation: ' + review.reviewerRecommendation + '</div>' +
-                '</div>')
+                '<div>Użytkownik: ' + review.productReviewer + '</div>' +
+                '<div>Podsumowanie: ' + review.reviewerRecommendation + '</div>')
+            if(review.positive_vote.length) {$('.product-reviews').append('<div>Łapkek w górę: ' + review.positive_vote + '</div>');}
+            if(review.negative_vote.length) {$('.product-reviews').append('<div>Łapkek w dół: ' + review.negative_vote + '</div>');}
+            if(review.opinion_date.length) {$('.product-reviews').append('<div>Data wystawienia opinii: ' + review.opinion_date + '</div>');}
+            if(review.star_count.length) {$('.product-reviews').append('<div>Ilość gwiazdek: ' + review.star_count + '</div>');}
+            if(review.opinion.length) {$('.product-reviews').append('<div>Opinia: ' + review.opinion + '</div>');}
+            if(review.pros.length) {$('.product-reviews').append('<div>Zalety: ' + review.pros + '</div>');}
+            if(review.cons.length) {$('.product-reviews').append('<div>Wady: ' + review.cons + '</div>');}
+            $('.product-reviews').append('</div>')
         });
     }
 
